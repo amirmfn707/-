@@ -1,0 +1,6 @@
+{
+  "name": "دستیار صوتی یادآور",
+  "description": "دستیار صوتی هوشمند برای درک و زمان‌بندی برنامه‌های کاری، آلارم هشدار و همگام‌سازی با تقویم گوگل با هوش مصنوعی GapGPT",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
