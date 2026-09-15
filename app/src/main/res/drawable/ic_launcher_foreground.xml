@@ -1,59 +1,272 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Glow disk behind mic -->
-    <path
-        android:pathData="M54,52m-28,0a28,28 0 1,0 56,0a28,28 0 1,0 -56,0"
-        android:fillColor="#15E7A94C" />
-    
-    <!-- Microphone capsule -->
-    <path
-        android:fillColor="#E7A94C"
-        android:pathData="M54,30c-4.4,0 -8,3.6 -8,8v14c0,4.4 3.6,8 8,8s8,-3.6 8,-8v-14c0,-4.4 -3.6,-8 -8,-8z" />
-    
-    <!-- Microphone cradle -->
-    <path
-        android:strokeColor="#F3EFE6"
-        android:strokeWidth="3.2"
-        android:strokeLineCap="round"
-        android:fillColor="#00000000"
-        android:pathData="M40,48c0,7.7 6.3,14 14,14s14,-6.3 14,-14" />
-    
-    <!-- Microphone stand & base -->
-    <path
-        android:strokeColor="#F3EFE6"
-        android:strokeWidth="3.2"
-        android:strokeLineCap="round"
-        android:fillColor="#00000000"
-        android:pathData="M54,62v9" />
-    <path
-        android:strokeColor="#F3EFE6"
-        android:strokeWidth="3.2"
-        android:strokeLineCap="round"
-        android:fillColor="#00000000"
-        android:pathData="M46,71h16" />
 
-    <!-- Audio wave bursts on left & right -->
+    <!-- ============================================== -->
+    <!-- 1. LOWER-LEFT METALLIC SILVER SWOOSH           -->
+    <!-- ============================================== -->
     <path
-        android:strokeColor="#E7A94C"
-        android:strokeWidth="2.5"
-        android:strokeLineCap="round"
-        android:fillColor="#00000000"
-        android:pathData="M33,46c-1.5,2.4 -1.5,5.6 0,8" />
-    <path
-        android:strokeColor="#E7A94C"
-        android:strokeWidth="2.5"
-        android:strokeLineCap="round"
-        android:fillColor="#00000000"
-        android:pathData="M75,46c1.5,2.4 1.5,5.6 0,8" />
+        android:pathData="M24,65 C20,53 23,39 31,34 C28,42 27,53 32,62 C37,68 45,68 53,61 C45,67 33,69 24,65 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="20"
+                android:startY="34"
+                android:endX="53"
+                android:endY="69"
+                android:type="linear">
+                <item android:color="#9EB8C9" android:offset="0.0" />
+                <item android:color="#6D8B9D" android:offset="0.5" />
+                <item android:color="#415C6E" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
 
-    <!-- Tiny calendar badge with spark in top-right -->
+    <!-- ============================================== -->
+    <!-- 2. UPPER-RIGHT GLOWING NEON CYAN SWOOSH        -->
+    <!-- ============================================== -->
+    <!-- Ambient Neon Blur / Glow underneath -->
     <path
-        android:fillColor="#E8836B"
-        android:pathData="M71,27h11c1.1,0 2,0.9 2,2v11c0,1.1 -0.9,2 -2,2h-11c-1.1,0 -2,-0.9 -2,-2v-11c0,-1.1 0.9,-2 2,-2z" />
+        android:pathData="M44,27 C63,16 80,20 86,33 C92,48 88,62 77,71 C85,61 88,48 83,37 C77,26 62,23 48,29 Z"
+        android:fillColor="#4538E1FF" />
+
+    <!-- Main Electric Neon Cyan Swoosh Arc -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M75,34h3v3h-3z" />
+        android:pathData="M46,27 C64,18 80,22 85,35 C90,48 86,61 77,69 C84,60 87,48 83,38 C77,28 63,25 49,30 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="46"
+                android:startY="18"
+                android:endX="88"
+                android:endY="69"
+                android:type="linear">
+                <item android:color="#C4F7FF" android:offset="0.0" />
+                <item android:color="#38E1FF" android:offset="0.4" />
+                <item android:color="#00A8CC" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Inner High-Intensity Neon White-Cyan Core Highlight -->
+    <path
+        android:pathData="M52,26 C66,21 78,25 82,35 C86,45 83,55 77,63"
+        android:strokeColor="#E6FFFFFF"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- ============================================== -->
+    <!-- 3. STYLIZED 'V' WITH NEON CORE & DIAGONAL ARROW-->
+    <!-- ============================================== -->
+    <!-- 'V' Left Leg - Metallic Outer Border -->
+    <path
+        android:pathData="M31,44 L37,63 L43,63 L37,44 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="31"
+                android:startY="44"
+                android:endX="43"
+                android:endY="63"
+                android:type="linear">
+                <item android:color="#8FA8B9" android:offset="0.0" />
+                <item android:color="#4B6677" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 'V' Left Leg - Glowing Neon Cyan Inset -->
+    <path
+        android:pathData="M33,46 L37,60 L40,60 L36,46 Z"
+        android:fillColor="#38E1FF" />
+
+    <!-- 'V' Right Leg & Arrow Shaft Shooting Diagonally Up-Right -->
+    <!-- Shaft glow -->
+    <path
+        android:pathData="M37,63 L53,35 L48,35 L34,59 Z"
+        android:fillColor="#5038E1FF" />
+    <!-- Shaft core -->
+    <path
+        android:pathData="M37,63 L53,35 L48,35 L34,59 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="34"
+                android:startY="63"
+                android:endX="53"
+                android:endY="35"
+                android:type="linear">
+                <item android:color="#00A8CC" android:offset="0.0" />
+                <item android:color="#38E1FF" android:offset="0.6" />
+                <item android:color="#D6F8FF" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Arrowhead Glowing Barb & Fin (Pointing ~60 deg NE) -->
+    <path
+        android:pathData="M57,26 L46,33 L50,35 L45,43 L48,44 L53,36 L57,39 Z"
+        android:fillColor="#6038E1FF" />
+    <path
+        android:pathData="M57,26 L46,33 L50,35 L45,43 L48,44 L53,36 L57,39 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="45"
+                android:startY="26"
+                android:endX="57"
+                android:endY="44"
+                android:type="linear">
+                <item android:color="#FFFFFF" android:offset="0.0" />
+                <item android:color="#58E6FF" android:offset="0.4" />
+                <item android:color="#00A8CC" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- ============================================== -->
+    <!-- 4. STYLIZED 'M' IN BRUSHED TITANIUM / STEEL    -->
+    <!-- ============================================== -->
+    <!-- 'M' Left Slanted Pillar -->
+    <path
+        android:pathData="M59,64 L62,44 L66,44 L63,64 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="59"
+                android:startY="44"
+                android:endX="66"
+                android:endY="64"
+                android:type="linear">
+                <item android:color="#9DB5C4" android:offset="0.0" />
+                <item android:color="#678395" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 'M' Center Chevron V -->
+    <path
+        android:pathData="M64,47 L69,57 L72,47 L75,47 L70,62 L67,62 L62,47 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="62"
+                android:startY="47"
+                android:endX="75"
+                android:endY="62"
+                android:type="linear">
+                <item android:color="#ADC5D4" android:offset="0.0" />
+                <item android:color="#587588" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 'M' Right Slanted Pillar -->
+    <path
+        android:pathData="M73,64 L76,44 L80,44 L77,64 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="73"
+                android:startY="44"
+                android:endX="80"
+                android:endY="64"
+                android:type="linear">
+                <item android:color="#8EA8B8" android:offset="0.0" />
+                <item android:color="#4F6D7F" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Top Metallic Edge Highlights on 'M' -->
+    <path
+        android:pathData="M62,44 L66,44 M72,47 L75,47 M76,44 L80,44"
+        android:strokeColor="#D3E6F2"
+        android:strokeWidth="1.0" />
+
+    <!-- ============================================== -->
+    <!-- 5. BOTTOM VOICE SOUNDWAVE EQUALIZER (NEON CYAN)-->
+    <!-- ============================================== -->
+    <!-- Underlying Soft Cyan Glow Horizon for Soundwave -->
+    <path
+        android:pathData="M26,80 C36,78 72,78 82,80 C72,82 36,82 26,80 Z"
+        android:fillColor="#3538E1FF" />
+
+    <!-- Equalizer Vertical Bars with Symmetrical Heights -->
+    <!-- Center Bar (Tallest - Pure Bright Cyan Core) -->
+    <path
+        android:pathData="M54,71 L54,89"
+        android:strokeColor="#EAFBFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round" />
+
+    <!-- Flanking Bars 1 (x=50, 58) -->
+    <path
+        android:pathData="M50,73 L50,87"
+        android:strokeColor="#38E1FF"
+        android:strokeWidth="2.3"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M58,73 L58,87"
+        android:strokeColor="#38E1FF"
+        android:strokeWidth="2.3"
+        android:strokeLineCap="round" />
+
+    <!-- Flanking Bars 2 (x=46, 62) -->
+    <path
+        android:pathData="M46,75 L46,85"
+        android:strokeColor="#38E1FF"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M62,75 L62,85"
+        android:strokeColor="#38E1FF"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round" />
+
+    <!-- Flanking Bars 3 (x=42, 66) -->
+    <path
+        android:pathData="M42,76.5 L42,83.5"
+        android:strokeColor="#00D2FF"
+        android:strokeWidth="2.1"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M66,76.5 L66,83.5"
+        android:strokeColor="#00D2FF"
+        android:strokeWidth="2.1"
+        android:strokeLineCap="round" />
+
+    <!-- Flanking Bars 4 (x=38, 70) -->
+    <path
+        android:pathData="M38,78 L38,82"
+        android:strokeColor="#00B4D8"
+        android:strokeWidth="2.0"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M70,78 L70,82"
+        android:strokeColor="#00B4D8"
+        android:strokeWidth="2.0"
+        android:strokeLineCap="round" />
+
+    <!-- Flanking Bars 5 (x=34, 74) -->
+    <path
+        android:pathData="M34,78.8 L34,81.2"
+        android:strokeColor="#0284C7"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M74,78.8 L74,81.2"
+        android:strokeColor="#0284C7"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round" />
+
+    <!-- Outer Endpoint Dots (x=30, 78) -->
+    <path
+        android:pathData="M30,79.5 L30,80.5"
+        android:strokeColor="#0369A1"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M78,79.5 L78,80.5"
+        android:strokeColor="#0369A1"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
 </vector>
+
+

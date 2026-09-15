@@ -5,30 +5,63 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+
+    <!-- Deep petrol blue background gradient -->
     <path
         android:pathData="M0,0h108v108h-108z">
         <aapt:attr name="android:fillColor">
             <gradient
-                android:startX="0"
-                android:startY="0"
-                android:endX="108"
-                android:endY="108"
+                android:startX="15"
+                android:startY="10"
+                android:endX="95"
+                android:endY="98"
                 android:type="linear">
-                <item android:color="#1F2856" android:offset="0.0" />
-                <item android:color="#10142A" android:offset="0.6" />
-                <item android:color="#0A0C1B" android:offset="1.0" />
+                <item android:color="#12344B" android:offset="0.0" />
+                <item android:color="#0A2030" android:offset="0.45" />
+                <item android:color="#05121B" android:offset="1.0" />
             </gradient>
         </aapt:attr>
     </path>
-    <!-- Subtle ambient circle -->
+
+    <!-- Concentric circular acoustic ripples (voice sonar waves) -->
     <path
-        android:pathData="M54,54m-42,0a42,42 0 1,0 84,0a42,42 0 1,0 -84,0"
-        android:strokeColor="#25E7A94C"
-        android:strokeWidth="1.5"
+        android:pathData="M54,50m-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"
+        android:strokeColor="#2238E1FF"
+        android:strokeWidth="1.2"
         android:fillColor="#00000000" />
     <path
-        android:pathData="M54,54m-48,0a48,48 0 1,0 96,0a48,48 0 1,0 -96,0"
-        android:strokeColor="#104E71BA"
-        android:strokeWidth="1"
+        android:pathData="M54,50m-30,0a30,30 0 1,0 60,0a30,30 0 1,0 -60,0"
+        android:strokeColor="#1838E1FF"
+        android:strokeWidth="1.2"
         android:fillColor="#00000000" />
+    <path
+        android:pathData="M54,50m-40,0a40,40 0 1,0 80,0a40,40 0 1,0 -80,0"
+        android:strokeColor="#1238E1FF"
+        android:strokeWidth="1.0"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M54,50m-48,0a48,48 0 1,0 96,0a48,48 0 1,0 -96,0"
+        android:strokeColor="#0A38E1FF"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Soft ambient cyan glow for upper-right swoosh -->
+    <path
+        android:pathData="M70,36m-24,0a24,24 0 1,0 48,0a24,24 0 1,0 -48,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="70"
+                android:startY="36"
+                android:endX="94"
+                android:endY="36"
+                android:type="radial"
+                android:gradientRadius="24">
+                <item android:color="#3538E1FF" android:offset="0.0" />
+                <item android:color="#1500B4D8" android:offset="0.6" />
+                <item android:color="#00000000" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
 </vector>
+
+

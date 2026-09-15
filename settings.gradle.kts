@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "VoiceAssistantCalendar"
+rootProject.name = "ViraVoiceAssistant"
 
 include(":app")

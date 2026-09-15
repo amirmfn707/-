@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -53,11 +54,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.R
 import com.example.ui.component.AddEditScheduleDialog
 import com.example.ui.component.ScheduleCalendarView
 import com.example.ui.component.ScheduleTableView
@@ -148,16 +151,24 @@ fun HomeScreen(
                     Column {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(10.dp)
-                                    .clip(CircleShape)
-                                    .background(AmberPrimary)
-                            )
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(PanelRaised)
+                                    .border(1.dp, CyanAccent.copy(alpha = 0.6f), RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                                    contentDescription = "آرم برنامه",
+                                    modifier = Modifier.size(36.dp)
+                                )
+                            }
                             Text(
-                                text = "دستیار صوتی یادآور",
+                                text = "دستیار صوتی ویرا",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = InkLight
@@ -167,7 +178,7 @@ fun HomeScreen(
                             text = PersianDateUtil.getCurrentPersianDescription(),
                             fontSize = 11.sp,
                             color = TextMuted,
-                            modifier = Modifier.padding(start = 18.dp, top = 2.dp)
+                            modifier = Modifier.padding(start = 42.dp, top = 2.dp)
                         )
                     }
                 },
