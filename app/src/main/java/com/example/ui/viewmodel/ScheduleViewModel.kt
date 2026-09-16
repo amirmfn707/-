@@ -204,30 +204,58 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             _isAiProcessing.value = true
             _aiStatusMessage.value = "در حال درک و زمان‌بندی با هوش مصنوعی…"
 
-            val result = repository.parseVoiceWithAI(trimmed, prefs.aiModel)
+            val result = repository.parseVoiceSchedulesWithAI(trimmed, prefs.aiModel)
 
-            result.onSuccess { parsed ->
-                val newItem = ScheduleItem(
-                    title = parsed.title,
-                    type = parsed.type,
-                    dateTimeMillis = parsed.dateTimeMillis,
-                    durationMinutes = parsed.durationMinutes,
-                    notes = parsed.notes,
-                    reminderMinutesBefore = if (parsed.reminderMinutesBefore > 0) parsed.reminderMinutesBefore else prefs.defaultAlarmMinutes,
-                    isAlarmEnabled = parsed.dateTimeMillis != null,
-                    originalVoiceTranscript = trimmed
-                )
+            result.onSuccess { parsedList ->
+                if (parsedList.isEmpty()) {
+                    _isAiProcessing.value = false
+                    _aiStatusMessage.value = null
+                    emitToast("برنامه‌ای در پیام شما استخراج نشد.")
+                    return@onSuccess
+                }
 
-                val id = repository.insertSchedule(newItem)
+                val insertedSummary = mutableListOf<String>()
+                var alarmCount = 0
+
+                for (parsed in parsedList) {
+                    val newItem = ScheduleItem(
+                        title = parsed.title,
+                        type = parsed.type,
+                        dateTimeMillis = parsed.dateTimeMillis,
+                        durationMinutes = parsed.durationMinutes,
+                        notes = parsed.notes,
+                        reminderMinutesBefore = if (parsed.reminderMinutesBefore > 0) parsed.reminderMinutesBefore else prefs.defaultAlarmMinutes,
+                        isAlarmEnabled = parsed.dateTimeMillis != null,
+                        originalVoiceTranscript = trimmed
+                    )
+
+                    repository.insertSchedule(newItem)
+                    if (newItem.isAlarmEnabled) {
+                        alarmCount++
+                    }
+
+                    val timeLabel = if (parsed.dateTimeMillis != null) {
+                        PersianDateUtil.formatPersianTimeOnly(parsed.dateTimeMillis)
+                    } else "بدون زمان"
+                    insertedSummary.add("${parsed.title} ($timeLabel)")
+                }
+
                 _isAiProcessing.value = false
                 _aiStatusMessage.value = null
 
-                val timeStr = if (parsed.dateTimeMillis != null) {
-                    "برای ${PersianDateUtil.formatPersianDateTime(parsed.dateTimeMillis)}"
+                if (parsedList.size == 1) {
+                    val single = parsedList[0]
+                    val timeStr = if (single.dateTimeMillis != null) {
+                        "برای ${PersianDateUtil.formatPersianDateTime(single.dateTimeMillis)}"
+                    } else {
+                        "بدون زمان مشخص"
+                    }
+                    val alarmNotice = if (single.dateTimeMillis != null) " • ⏰ آلارم فعال شد" else ""
+                    emitToast("ثبت شد: ${single.title} ($timeStr)$alarmNotice")
                 } else {
-                    "بدون زمان مشخص"
+                    val alarmNotice = if (alarmCount > 0) " (⏰ $alarmCount آلارم فعال شد)" else ""
+                    emitToast("✅ ${PersianDateUtil.toPersianDigits(parsedList.size.toString())} برنامه کاری ثبت شد$alarmNotice:\n${insertedSummary.joinToString(" • ")}")
                 }
-                emitToast("ثبت شد: ${parsed.title} ($timeStr)")
             }.onFailure { err ->
                 _isAiProcessing.value = false
                 _aiStatusMessage.value = null
@@ -251,7 +279,16 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     fun toggleAlarm(item: ScheduleItem) {
         viewModelScope.launch {
             repository.toggleAlarm(item)
-            val statusStr = if (!item.isAlarmEnabled) "هشدار فعال شد" else "هشدار غیرفعال شد"
+            val statusStr = if (!item.isAlarmEnabled) {
+                if (item.dateTimeMillis != null) {
+                    val timeStr = PersianDateUtil.formatPersianDateTime(item.dateTimeMillis)
+                    "⏰ هشدار برای $timeStr فعال شد"
+                } else {
+                    "⏰ هشدار فعال شد"
+                }
+            } else {
+                "🔕 هشدار غیرفعال شد"
+            }
             emitToast(statusStr)
         }
     }

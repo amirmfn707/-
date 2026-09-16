@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.R
+import com.example.alarm.AlarmHelper
 import com.example.ui.component.AddEditScheduleDialog
 import com.example.ui.component.ScheduleCalendarView
 import com.example.ui.component.ScheduleTableView
@@ -128,6 +129,7 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
+        AlarmHelper.createNotificationChannel(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)

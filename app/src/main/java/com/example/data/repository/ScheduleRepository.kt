@@ -96,4 +96,8 @@ class ScheduleRepository(
     suspend fun parseVoiceWithAI(transcript: String, modelName: String): Result<ParsedScheduleResult> {
         return gapGptService.parseVoiceSchedule(transcript, modelName)
     }
+
+    suspend fun parseVoiceSchedulesWithAI(transcript: String, modelName: String): Result<List<ParsedScheduleResult>> {
+        return gapGptService.parseVoiceSchedules(transcript, modelName)
+    }
 }
