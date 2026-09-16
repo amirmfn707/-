@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>دستیار صوتی و زمان‌بندی کاری ویرا</title>
+  
+  <!-- iOS PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ویرا">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  
+  <!-- Web Manifest & Favicon -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <meta name="theme-color" content="#1E1B4B">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Toast Messages Container -->
+  <div class="toast-container">
+    <div id="toast" class="toast">پیام سیستم</div>
+  </div>
+
+  <!-- Alarm Overlay Popup -->
+  <div id="alarmOverlay" class="alarm-overlay">
+    <div class="alarm-box">
+      <div class="alarm-icon-big">⏰</div>
+      <div id="alarmOverlayTitle" class="alarm-box-title">یادآوری کاری</div>
+      <div id="alarmOverlayDesc" class="alarm-box-desc">موعد جلسه یا کار شما فرا رسیده است</div>
+      <button class="btn-dismiss-alarm" onclick="dismissAlarm()">متوجه شدم / قطع زنگ</button>
+    </div>
+  </div>
+
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand-wrapper">
+          <img src="icons/icon-192.png" alt="ویرا" class="brand-icon">
+          <div class="brand-text">
+            <h1>دستیار صوتی ویرا</h1>
+            <div id="currentDateBadge" class="date-badge">در حال دریافت تاریخ…</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" title="راهنمای نصب آیفون" onclick="openIosGuideModal()">
+            📱
+          </button>
+          <button class="btn-icon" title="تنظیمات هوش مصنوعی" onclick="openSettingsModal()">
+            ⚙️
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- iPhone Install Banner (Auto-shown on Safari iOS) -->
+    <div id="iosInstallBanner" class="ios-banner" style="display: none;">
+      <div class="ios-banner-text">
+        <strong>نصب به عنوان برنامه در آیفون:</strong>
+        دکمه Share (⎋) سافاری را زده و Add to Home Screen را انتخاب کنید.
+      </div>
+      <button class="btn-banner" onclick="openIosGuideModal()">راهنما</button>
+    </div>
+
+    <!-- AI Voice Processing Status Card -->
+    <div id="aiStatusCard" class="ai-status-card" style="display: none;">
+      <div class="ai-spinner"></div>
+      <div class="ai-status-info">
+        <div id="aiStatusTitle" class="ai-status-title">در حال گوش دادن…</div>
+        <div id="aiStatusDesc" class="ai-status-desc">لطفاً صحبت کنید</div>
+      </div>
+    </div>
+
+    <!-- View Modes & Tabs -->
+    <div class="tabs-bar">
+      <div class="view-mode-selector">
+        <button class="view-btn active" data-mode="cards">
+          🗂️ کارت‌ها
+        </button>
+        <button class="view-btn" data-mode="calendar">
+          📅 تقویم ماه
+        </button>
+        <button class="view-btn" data-mode="table">
+          📋 جدول
+        </button>
+      </div>
+
+      <button class="btn-icon" title="افزودن دستی" onclick="openAddModal()">
+        ➕
+      </button>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+      <button class="chip active" data-filter="all">همه برنامه‌ها</button>
+      <button class="chip" data-filter="today">امروز</button>
+      <button class="chip" data-filter="future">آینده</button>
+      <button class="chip" data-filter="completed">انجام‌شده</button>
+    </div>
+
+    <!-- Main Dynamic Content List -->
+    <main id="contentArea" class="content-area">
+      <!-- Injected by JavaScript -->
+    </main>
+
+    <!-- Floating Bottom Mic & Quick Input Dock -->
+    <div class="mic-dock">
+      <div class="dock-content">
+        <input 
+          type="text" 
+          id="dockTextInput" 
+          class="dock-text-input" 
+          placeholder="تایپ یا ضبط صوتی…"
+          autocomplete="off"
+        >
+        <button id="btnDockSend" class="btn-dock-icon" title="ارسال">
+          🚀
+        </button>
+        <button id="btnMasterMic" class="btn-mic-master" title="ضبط صوتی به فارسی">
+          🎙️
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Manual Add / Edit Modal -->
+  <div id="addModal" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-drag-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title">افزودن برنامه جدید</h2>
+        <button class="btn-icon" onclick="closeAddModal()">✕</button>
+      </div>
+      <form id="manualAddForm">
+        <div class="form-group">
+          <label class="form-label">عنوان برنامه یا جلسه:</label>
+          <input type="text" id="addTitle" class="form-input" placeholder="مثلاً: جلسه کاری با مدیر مالی" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">دسته‌بندی:</label>
+          <select id="addType" class="form-select">
+            <option value="meeting">جلسه کاری (Meeting)</option>
+            <option value="reminder">یادآوری مهم (Reminder)</option>
+            <option value="task" selected>کار شخصی یا اداری (Task)</option>
+            <option value="event">رویداد عمومی (Event)</option>
+          </select>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">تاریخ میلادی:</label>
+            <input type="date" id="addDate" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ساعت شروع:</label>
+            <input type="time" id="addTime" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">یادآوری قبل از موعد:</label>
+          <select id="addReminder" class="form-select">
+            <option value="5">۵ دقیقه قبل</option>
+            <option value="15" selected>۱۵ دقیقه قبل</option>
+            <option value="30">۳۰ دقیقه قبل</option>
+            <option value="60">۱ ساعت قبل</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">توضیحات و یادداشت (اختیاری):</label>
+          <textarea id="addNotes" class="form-textarea" rows="2" placeholder="جزئیات بیشتر، آدرس یا نکات مهم…"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary-block">
+          💾 ذخیره و ثبت برنامه
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-drag-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title">تنظیمات هوش مصنوعی و سیستم</h2>
+        <button class="btn-icon" onclick="closeSettingsModal()">✕</button>
+      </div>
+      <form id="settingsForm">
+        <div class="form-group">
+          <label class="form-label">کلید API گپ‌جی‌پی‌تی (GapGPT):</label>
+          <input type="password" id="settingApiKey" class="form-input" placeholder="gap_...">
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 4px;">
+            کلید API اختصاصی شما به صورت امن در حافظه محلی گوشی ذخیره می‌شود.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">مدل هوش مصنوعی:</label>
+          <select id="settingModel" class="form-select">
+            <option value="gpt-4o-mini">GPT-4o Mini (سریع و بهینه - پیشنهادی)</option>
+            <option value="gpt-4o">GPT-4o (بالاترین دقت در درک زمان)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">زمان پیش‌فرض هشدار (دقیقه قبل):</label>
+          <input type="number" id="settingDefaultAlarm" class="form-input" min="0" max="120" value="15">
+        </div>
+
+        <button type="submit" class="btn-primary-block">
+          💾 ذخیره تنظیمات
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- iOS Installation Guide Modal -->
+  <div id="iosGuideModal" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-drag-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title">راهنمای اجرای نسخه آیفون (iOS)</h2>
+        <button class="btn-icon" onclick="closeIosGuideModal()">✕</button>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <p style="font-size: 0.88rem; color: #CBD5E1; line-height: 1.6; margin-bottom: 16px;">
+          برای استفاده از این برنامه در آیفون دقیقاً مشابه یک اپلیکیشن بدون نیاز به اپ‌استور:
+        </p>
+
+        <div class="ios-guide-step">
+          <div class="step-num">۱</div>
+          <div class="step-desc">
+            این لینک را در مرورگر <strong>Safari</strong> گوشی آیفون خود باز کنید.
+          </div>
+        </div>
+
+        <div class="ios-guide-step">
+          <div class="step-num">۲</div>
+          <div class="step-desc">
+            در نوار پایین سافاری، دکمه <strong>اشتراک‌گذاری (Share Icon ⎋)</strong> را لمس کنید.
+          </div>
+        </div>
+
+        <div class="ios-guide-step">
+          <div class="step-num">۳</div>
+          <div class="step-desc">
+            از منوی باز شده، گزینه <strong>Add to Home Screen (افزودن به صفحه اصلی ➕)</strong> را انتخاب کنید.
+          </div>
+        </div>
+
+        <div class="ios-guide-step">
+          <div class="step-num">۴</div>
+          <div class="step-desc">
+            روی <strong>Add</strong> در بالا ضربه بزنید. آیکون «ویرا» به صفحه برنامه‌های آیفون شما اضافه شده و تمام‌صفحه و آفلاین اجرا خواهد شد!
+          </div>
+        </div>
+
+        <div class="ios-guide-step">
+          <div class="step-num">💡</div>
+          <div class="step-desc">
+            <strong>اتصال به تقویم آیفون:</strong> در هر کارت برنامه با زدن دکمه <strong>«🍏 افزودن به تقویم آیفون»</strong>، جلسه مستقیماً در تقویم رسمی iOS همراه با زنگ هشدار ثبت می‌شود.
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary-block" onclick="closeIosGuideModal()">
+        متوجه شدم
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript Entry -->
+  <script src="app.js"></script>
+</body>
+</html>

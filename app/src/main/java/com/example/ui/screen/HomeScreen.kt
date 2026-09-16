@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PhoneIphone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TableChart
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +49,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,6 +67,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.R
 import com.example.alarm.AlarmHelper
 import com.example.ui.component.AddEditScheduleDialog
+import com.example.ui.component.IosPwaDialog
 import com.example.ui.component.ScheduleCalendarView
 import com.example.ui.component.ScheduleTableView
 import com.example.ui.component.SettingsDialog
@@ -144,6 +149,8 @@ fun HomeScreen(
         }
     }
 
+    var showIosDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = NavyDark,
@@ -206,6 +213,18 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Default.CloudSync,
                             contentDescription = "همگام‌سازی همه با تقویم گوگل",
+                            tint = CyanAccent
+                        )
+                    }
+
+                    // iOS / Web PWA Button
+                    IconButton(
+                        onClick = { showIosDialog = true },
+                        modifier = Modifier.testTag("ios_pwa_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PhoneIphone,
+                            contentDescription = "نسخه آیفون و تحت وب",
                             tint = CyanAccent
                         )
                     }
@@ -439,6 +458,13 @@ fun HomeScreen(
                 )
             },
             onDismiss = { viewModel.setShowAddEditDialog(false) }
+        )
+    }
+
+    // iOS PWA Information & Share Dialog
+    if (showIosDialog) {
+        IosPwaDialog(
+            onDismissRequest = { showIosDialog = false }
         )
     }
 }
