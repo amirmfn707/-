@@ -153,12 +153,12 @@ fun ScheduleTableView(
                 }
 
                 // Type Badge
-                Box(modifier = Modifier.width(80.dp)) {
-                    val badgeColor = when (item.type.lowercase()) {
-                        ScheduleItem.TYPE_MEETING -> CyanAccent
-                        ScheduleItem.TYPE_REMINDER -> CoralAccent
-                        ScheduleItem.TYPE_EVENT -> EmeraldAccent
-                        else -> AmberPrimary
+                Box(modifier = Modifier.width(90.dp)) {
+                    val (badgeColor, icon) = when (item.type.lowercase()) {
+                        ScheduleItem.TYPE_MEETING -> CyanAccent to "💼 "
+                        ScheduleItem.TYPE_REMINDER -> CoralAccent to "⏰ "
+                        ScheduleItem.TYPE_EVENT -> Color(0xFFC084FC) to "🎪 "
+                        else -> EmeraldAccent to "📝 "
                     }
                     Surface(
                         shape = RoundedCornerShape(8.dp),
@@ -166,7 +166,7 @@ fun ScheduleTableView(
                         border = androidx.compose.foundation.BorderStroke(1.dp, badgeColor.copy(alpha = 0.4f))
                     ) {
                         Text(
-                            text = ScheduleItem.getPersianTypeLabel(item.type),
+                            text = icon + ScheduleItem.getPersianTypeLabel(item.type),
                             color = badgeColor,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium,

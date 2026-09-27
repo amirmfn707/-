@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneIphone
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.TableChart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -72,10 +73,13 @@ import com.example.ui.component.ScheduleCalendarView
 import com.example.ui.component.ScheduleTableView
 import com.example.ui.component.SettingsDialog
 import com.example.ui.component.VoiceAssistantOrb
+import com.example.ui.component.WordPressManagerDialog
 import com.example.ui.theme.AmberContainer
 import com.example.ui.theme.AmberPrimary
 import com.example.ui.theme.BorderLine
+import com.example.ui.theme.CoralAccent
 import com.example.ui.theme.CyanAccent
+import com.example.ui.theme.EmeraldAccent
 import com.example.ui.theme.InkLight
 import com.example.ui.theme.NavyDark
 import com.example.ui.theme.NavyDeep
@@ -85,6 +89,7 @@ import com.example.ui.theme.PanelRaised
 import com.example.ui.theme.TextMuted
 import com.example.ui.theme.TextMuted2
 import com.example.ui.viewmodel.ScheduleFilter
+import com.example.ui.viewmodel.ScheduleTypeFilter
 import com.example.ui.viewmodel.ScheduleViewModel
 import com.example.ui.viewmodel.ViewMode
 import com.example.util.PersianDateUtil
@@ -99,6 +104,8 @@ fun HomeScreen(
 
     val viewMode by viewModel.viewMode.collectAsStateWithLifecycle()
     val activeFilter by viewModel.activeFilter.collectAsStateWithLifecycle()
+    val selectedTypeFilter by viewModel.selectedTypeFilter.collectAsStateWithLifecycle()
+    val typeCounts by viewModel.typeCounts.collectAsStateWithLifecycle()
     val filteredSchedules by viewModel.filteredSchedules.collectAsStateWithLifecycle()
     val voiceState by viewModel.voiceState.collectAsStateWithLifecycle()
     val isAiProcessing by viewModel.isAiProcessing.collectAsStateWithLifecycle()
@@ -108,6 +115,13 @@ fun HomeScreen(
     val showSettingsDialog by viewModel.showSettingsDialog.collectAsStateWithLifecycle()
     val showAddEditDialog by viewModel.showAddEditDialog.collectAsStateWithLifecycle()
     val editingItem by viewModel.editingItem.collectAsStateWithLifecycle()
+
+    val showWordPressDialog by viewModel.showWordPressDialog.collectAsStateWithLifecycle()
+    val wpConnectionStatus by viewModel.wpConnectionStatus.collectAsStateWithLifecycle()
+    val wpPosts by viewModel.wpPosts.collectAsStateWithLifecycle()
+    val wcOrders by viewModel.wcOrders.collectAsStateWithLifecycle()
+    val wcSalesReport by viewModel.wcSalesReport.collectAsStateWithLifecycle()
+    val isWpLoading by viewModel.isWpLoading.collectAsStateWithLifecycle()
 
     // Permission launchers
     val recordAudioLauncher = rememberLauncherForActivityResult(
@@ -226,6 +240,18 @@ fun HomeScreen(
                             imageVector = Icons.Default.PhoneIphone,
                             contentDescription = "نسخه آیفون و تحت وب",
                             tint = CyanAccent
+                        )
+                    }
+
+                    // WordPress & WooCommerce Manager Button
+                    IconButton(
+                        onClick = { viewModel.setShowWordPressDialog(true) },
+                        modifier = Modifier.testTag("wordpress_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "مدیریت وردپرس و ووکامرس",
+                            tint = if (viewModel.isWordPressConfigured) EmeraldAccent else CyanAccent
                         )
                     }
 
@@ -373,7 +399,7 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 listOf(
-                    ScheduleFilter.ALL to "همه",
+                    ScheduleFilter.ALL to "همه زمان‌ها",
                     ScheduleFilter.TODAY to "امروز",
                     ScheduleFilter.TOMORROW to "فردا",
                     ScheduleFilter.UPCOMING to "آینده",
@@ -391,10 +417,46 @@ fun HomeScreen(
                     ) {
                         Text(
                             text = label,
-                            fontSize = 12.5.sp,
+                            fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                             color = if (isSelected) AmberPrimary else TextMuted,
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+            }
+
+            // Task Type Filter Chips Row (Distinct behaviors & categories)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val typeChips = listOf(
+                    Triple(ScheduleTypeFilter.ALL, "همه نوع", AmberPrimary),
+                    Triple(ScheduleTypeFilter.MEETING, "💼 جلسات کاری (${typeCounts[ScheduleTypeFilter.MEETING] ?: 0})", CyanAccent),
+                    Triple(ScheduleTypeFilter.REMINDER, "⏰ یادآوری‌ها (${typeCounts[ScheduleTypeFilter.REMINDER] ?: 0})", CoralAccent),
+                    Triple(ScheduleTypeFilter.TASK, "📝 وظایف (${typeCounts[ScheduleTypeFilter.TASK] ?: 0})", EmeraldAccent),
+                    Triple(ScheduleTypeFilter.EVENT, "🎪 رویدادها (${typeCounts[ScheduleTypeFilter.EVENT] ?: 0})", Color(0xFFC084FC))
+                )
+                typeChips.forEach { (typeFilter, label, accentColor) ->
+                    val isSelected = selectedTypeFilter == typeFilter
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isSelected) accentColor.copy(alpha = 0.22f) else PanelRaised.copy(alpha = 0.5f),
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            if (isSelected) accentColor else BorderLine
+                        ),
+                        modifier = Modifier.clickable { viewModel.setTypeFilter(typeFilter) }
+                    ) {
+                        Text(
+                            text = label,
+                            fontSize = 11.5.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            color = if (isSelected) accentColor else TextMuted,
+                            modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp)
                         )
                     }
                 }
@@ -464,7 +526,43 @@ fun HomeScreen(
     // iOS PWA Information & Share Dialog
     if (showIosDialog) {
         IosPwaDialog(
+            initialPwaUrl = viewModel.pwaUrl,
+            onSavePwaUrl = { viewModel.savePwaUrl(it) },
+            onResetPwaUrl = { viewModel.resetPwaUrl() },
             onDismissRequest = { showIosDialog = false }
+        )
+    }
+
+    // WordPress & WooCommerce Management Dialog
+    if (showWordPressDialog) {
+        WordPressManagerDialog(
+            initialSiteUrl = viewModel.wpSiteUrl,
+            initialUsername = viewModel.wpUsername,
+            initialAppPassword = viewModel.wpAppPassword,
+            initialConsumerKey = viewModel.wcConsumerKey,
+            initialConsumerSecret = viewModel.wcConsumerSecret,
+            connectionStatus = wpConnectionStatus,
+            orders = wcOrders,
+            posts = wpPosts,
+            salesReport = wcSalesReport,
+            isLoading = isWpLoading,
+            onSaveConfig = { url, user, pass, ck, cs ->
+                viewModel.saveWordPressConfig(url, user, pass, ck, cs)
+            },
+            onRefresh = { viewModel.loadWordPressData() },
+            onCreatePost = { title, content, status, scheduledDateIso ->
+                viewModel.createWordPressPost(title, content, status, scheduledDateIso)
+            },
+            onCreateCoupon = { code, amount, type ->
+                viewModel.createWooCoupon(code, amount, type)
+            },
+            onUpdateOrderStatus = { orderId, status ->
+                viewModel.updateOrderStatus(orderId, status)
+            },
+            onAddOrderToSchedule = { order ->
+                viewModel.addOrderToSchedule(order)
+            },
+            onDismiss = { viewModel.setShowWordPressDialog(false) }
         )
     }
 }

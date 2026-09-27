@@ -236,19 +236,44 @@ fun ScheduleItemCard(
 
                 Spacer(modifier = Modifier.width(6.dp))
 
-                // Type Badge
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = typeColor.copy(alpha = 0.15f),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, typeColor.copy(alpha = 0.35f))
+                // Type Badge & Duration
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(
-                        text = ScheduleItem.getPersianTypeLabel(item.type),
-                        color = typeColor,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.5.dp)
-                    )
+                    if (item.type.equals(ScheduleItem.TYPE_MEETING, ignoreCase = true) && item.durationMinutes > 0) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = PanelRaised,
+                            border = androidx.compose.foundation.BorderStroke(1.dp, BorderLine)
+                        ) {
+                            Text(
+                                text = "⏱ ${item.durationMinutes}د",
+                                color = CyanAccent,
+                                fontSize = 10.sp,
+                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = typeColor.copy(alpha = 0.15f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, typeColor.copy(alpha = 0.35f))
+                    ) {
+                        val icon = when (item.type.lowercase()) {
+                            ScheduleItem.TYPE_MEETING -> "💼 "
+                            ScheduleItem.TYPE_REMINDER -> "⏰ "
+                            ScheduleItem.TYPE_EVENT -> "🎪 "
+                            else -> "📝 "
+                        }
+                        Text(
+                            text = icon + ScheduleItem.getPersianTypeLabel(item.type),
+                            color = typeColor,
+                            fontSize = 10.5.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.5.dp)
+                        )
+                    }
                 }
 
                 // Delete Button
